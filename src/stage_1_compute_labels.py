@@ -4,6 +4,7 @@ Compute water-dominance masks from data that have fat and water maps
 
 import os
 import logging
+import argparse
 
 from tqdm import tqdm
 import numpy as np
@@ -11,11 +12,17 @@ import dbdicom as db
 
 
 
-def compute(group, site=None):
+def run(build):
+    run_batch(build, 'Controls')
+    for site in ['Bordeaux', 'Bari', 'Leeds', 'Sheffield', 'Turku', 'Exeter']:
+        run_batch(build, 'Patients', site)
+
+
+def run_batch(build, group, site=None):
 
     # Define global paths
-    datapath = os.path.join(os.getcwd(), 'build', 'dixon', 'stage_2_data') 
-    waterdompath = os.path.join(os.getcwd(), 'build', 'fatwater', 'stage_1_waterdom') 
+    datapath = os.path.join(build, 'dixon', 'stage_2_data') 
+    waterdompath = os.path.join(build, 'fatwater', 'stage_1_labels') 
     os.makedirs(waterdompath, exist_ok=True)
 
     # Set up logging
@@ -68,7 +75,7 @@ def compute(group, site=None):
         try:
             # Build label array (0=Air, 1=Water dominant, 2=Fat dominant)
             label_array = np.zeros(wi.values.shape, dtype=np.int16)
-            label_array[wi.values > fi.values] = 1
+            label_array[wi.values > fi.values] = 1   # TODO: THIS NEEDS T2* decay correction!! Then train again.
             #label_array[fat_dominant & foreground] = 2
         except Exception as e:
             logging.error(f"Error computing water-dominant mask for {patient} {sequence}: {e}")
@@ -76,3 +83,13 @@ def compute(group, site=None):
         
         db.write_volume((label_array, wi.affine), waterdom_series, ref=series_wi)
 
+
+if __name__=='__main__':
+
+    LOCALPATH = r'C:\Users\md1spsx\Documents\Data\iBEAt_Build'
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--build", type=str, default=LOCALPATH, help="Build folder")
+    args = parser.parse_args()
+
+    run(args.build)

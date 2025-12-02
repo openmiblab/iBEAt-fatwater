@@ -5,39 +5,18 @@ Compute water-dominance masks from data that have fat and water maps
 import os
 import logging
 import json
+import argparse
 
 from tqdm import tqdm
 import dbdicom as db
 
-def build_json(num_training):
 
-    trainingdatapath = os.path.join(os.getcwd(), 'build', 'fatwater', 'stage_2_trainingdata', 'nnUNet_raw')
-    database = os.path.join(trainingdatapath, "Dataset011_iBEAtFatWater")
-
-    # Build dataset.json file
-    json_data = { 
-        "channel_names": {  
-            "0": "out_phase", 
-            "1": "in_phase"
-        }, 
-        "labels": { 
-            "background": 0,
-            "water_dominant": 1
-        }, 
-        "numTraining": num_training, 
-        "file_ending": ".nii.gz"
-    }
-    json_file = os.path.join(database, 'dataset.json')
-    with open(json_file, 'w') as f:
-        json.dump(json_data, f, indent=2)
-
-
-def generate():
+def run(build):
 
     # Data and results paths
-    datapath = os.path.join(os.getcwd(), 'build', 'dixon', 'stage_2_data') 
-    waterdompath = os.path.join(os.getcwd(), 'build', 'fatwater', 'stage_1_waterdom') 
-    trainingdatapath = os.path.join(os.getcwd(), 'build', 'fatwater', 'stage_2_trainingdata', 'nnUNet_raw')
+    datapath = os.path.join(build, 'dixon', 'stage_2_data') 
+    waterdompath = os.path.join(build, 'fatwater', 'stage_1_labels') 
+    trainingdatapath = os.path.join(build, 'fatwater', 'stage_2_training_data', 'nnUNet_raw')
     os.makedirs(trainingdatapath, exist_ok=True)
 
     # Create the database folder structure
@@ -46,13 +25,6 @@ def generate():
     labels_tr = os.path.join(database, 'labelsTr')
     os.makedirs(images_tr, exist_ok=True)
     os.makedirs(labels_tr, exist_ok=True)
-
-    # Set up logging
-    logging.basicConfig(
-        filename=os.path.join(trainingdatapath, 'error.log'),
-        level=logging.INFO,
-        format='%(asctime)s - %(levelname)s - %(message)s'
-    )
 
     # Get water series
     series = db.series(datapath)
@@ -101,6 +73,46 @@ def generate():
             continue
         num_training += 1
 
-    build_json(num_training)
+    build_json(trainingdatapath, num_training)
 
 
+
+def build_json(trainingdatapath, num_training):
+
+    database = os.path.join(trainingdatapath, "Dataset011_iBEAtFatWater")
+
+    # Build dataset.json file
+    json_data = { 
+        "channel_names": {  
+            "0": "out_phase", 
+            "1": "in_phase"
+        }, 
+        "labels": { 
+            "background": 0,
+            "water_dominant": 1
+        }, 
+        "numTraining": num_training, 
+        "file_ending": ".nii.gz"
+    }
+    json_file = os.path.join(database, 'dataset.json')
+    with open(json_file, 'w') as f:
+        json.dump(json_data, f, indent=2)
+
+
+
+if __name__=='__main__':
+
+    LOCALPATH = r'C:\Users\md1spsx\Documents\Data\iBEAt_Build'
+
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--build", type=str, default=LOCALPATH, help="Build folder")
+    args = parser.parse_args()
+
+    # Set up logging
+    logging.basicConfig(
+        filename=os.path.join(args.build, 'error.log'),
+        level=logging.INFO,
+        format='%(asctime)s - %(levelname)s - %(message)s'
+    )
+
+    run(args.build)
