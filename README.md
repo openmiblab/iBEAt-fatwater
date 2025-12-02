@@ -14,7 +14,7 @@ The crucial bit of information that is missing with magnitude-only data is the s
 
 ## 🛠️ Methods
 
-Training data are taken from 1,143 3D Dixon scans of the abdomen acquired in the [iBEAt study on diabetic kidney disease](https://pubmed.ncbi.nlm.nih.gov/32600374/). The dataset includes pre- and post contrast agent images from patients, and precontrast scans in volunteers.
+Training data are taken from 1,143 3D Dixon scans of the abdomen acquired in the [iBEAt study on diabetic kidney disease](https://pubmed.ncbi.nlm.nih.gov/32600374/). The dataset includes pre- and post contrast agent images from patients, and precontrast scans in volunteers. Data were acquired with a field of view of 400 mm in both the read and phase directions, a slice thickness of 1.5 mm, and 144 slices per slab. The repetition time (TR) was 4.01 ms, with two echo times (TE) at 1.34 ms and 2.57 ms. 
 
 The pipeline trains an [nUNet model](https://github.com/MIC-DKFZ/nnUNet) to predict a binary image with value=1 in pixels that contain mostly water, and 0 otherwise. A two-channel input is used accepting in-phase and opposed-phase magnitude images. 
 
