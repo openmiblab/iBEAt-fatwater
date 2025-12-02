@@ -23,14 +23,14 @@ The pipeline trains an [nUNet model](https://github.com/MIC-DKFZ/nnUNet) to pred
 
 This `src` folder contains all the steps needed to reproduce the trained model. As the iBEAt source data are currently still embargoed, the source data are only available to `miblab` members. The pipeline itself is split up into 8 consecutive stages. Each stage will produce a subfolder in a user-defined `build` folder. Subfolders are named after the stage of the pipeline that has produced them.
 
-- `stage_0_restore data.py`: this restores the data from the `miblab` google drive archive to a local disk and can only be run by `miblab` members with access to the google drive. The outout of this stage is a folder `data\dixon` with Dixon data in DICOM format.
-- `stage_1_compute_labels.py`: this derives the binary ground-truth images from the available fat and water data. The labels are saved in DICOM in a folder `build\stage_1_labels`.
-- `stage_2_training_data.py`: This organises the orginal Dixon source images (in and opposed-phase) and computed labels into the format required by nnUNet for training. The results are stored in the folder `build\stage_2_training_data`.
-- `stage_3_preprocess.py`: This runs the nnUNet preprocessing step in the training data and saves the results in `build\stage_3_preprocess`.
-- `stage_4_train.py`: performs the actual training, fold-by-fold (5 folds in total). All results (trained model weights, logs and validation results) are saved in `build\stage_4_train`.
+- `stage_0_restore data.py` restores the data from the `miblab` google drive archive to a local disk and can only be run by `miblab` members with access to the google drive. The output of this stage is a folder `data\dixon` with Dixon data in DICOM format.
+- `stage_1_compute_labels.py` derives the binary ground-truth images from the available fat and water data. The labels are saved in DICOM in a folder `build\stage_1_labels`.
+- `stage_2_training_data.py` organises the orginal Dixon source images (in and opposed-phase) and computed labels into the format required by nnUNet for training. The results are stored in the folder `build\stage_2_training_data`.
+- `stage_3_preprocess.py` runs the nnUNet preprocessing step on the training data and saves the results in `build\stage_3_preprocess`.
+- `stage_4_train.py` performs the actual training, fold-by-fold (5 folds in total). All results (trained model weights, logs and validation results) are saved in `build\stage_4_train`.
 - `stage_5_find_config.py` uses standard nnUNet functions to find the optimal configuration. The results are also saved in `build\stage_4_train`.
 - `stage_6_build_distribution` takes the trained model weights and essential json files to construct a light-weight distribution folder `build\stage_6_distribution`. 
-- `stage_7_test.py` perfoms a sanity check on the python API wrapper in `src\utils\fatwatermap.py` by reconstructing fat and water images for a few cases, exporting the 3D volumes as mosaics, and comparing the result against fat and water maps reconstructed on the scanner. 
+- `stage_7_test.py` performs a sanity check on the python API wrapper in `src\utils\fatwatermap.py` by reconstructing fat and water images for a few cases, exporting the 3D volumes as mosaics, and comparing the result against fat and water maps reconstructed on the scanner. 
  
 
 ## 💻 Running the pipeline
@@ -42,7 +42,7 @@ conda env create -n fatwater -f environment.yml
 conda activate fatwater
 ```
 
-In theory the complete pipeline can be run in one go from the terminal, using the top-level function `pipeline.py` and paths to data and build folders as arguments:
+In theory the complete pipeline can be run in one go from the terminal, using the top-level function `pipeline.py` and paths to archive and build folders as arguments:
 
 ```bash
 python src/pipeline.py --archive=path/to/archive --build=path/to/output
@@ -96,8 +96,8 @@ fat_image, water_image = fatwater(
     in_phase_image,             # 3D numpy array (same shape)
     opposed_phase_echo_time,    # opposed-phase TE in ms
     in_phase_echo_time,         # in-phase TE in ms
-    T2star_water,               # T2* of water in ms     
-    T2star_fat,                 # T2* of fat in ms
+    t2star_water,               # T2* of water in ms     
+    t2star_fat,                 # T2* of fat in ms
 )
 ```
 
