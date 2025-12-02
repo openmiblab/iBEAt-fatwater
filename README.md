@@ -21,7 +21,7 @@ The pipeline trains an [nUNet model](https://github.com/MIC-DKFZ/nnUNet) to pred
 
 ## 📁 Code structure
 
-This pipeline contains all the steps needed to reproduce the trained model. As the iBEAt source data are currently still embargoed, the source data are only available to `miblab` members. The pipeline itself is split up into 8 consecutive stages. Each stage will produce a subfolder in a user-defined `data` and `build` folders. Subfolders are named after the stage of the pipeline that has produced them.
+This `src` folder contains all the steps needed to reproduce the trained model. As the iBEAt source data are currently still embargoed, the source data are only available to `miblab` members. The pipeline itself is split up into 8 consecutive stages. Each stage will produce a subfolder in a user-defined `build` folder. Subfolders are named after the stage of the pipeline that has produced them.
 
 - `stage_0_restore data.py`: this restores the data from the `miblab` google drive archive to a local disk and can only be run by `miblab` members with access to the google drive. The outout of this stage is a folder `data\dixon` with Dixon data in DICOM format.
 - `stage_1_compute_labels.py`: this derives the binary ground-truth images from the available fat and water data. The labels are saved in DICOM in a folder `build\stage_1_labels`.
