@@ -1,0 +1,31 @@
+{
+  "title": "Model training for fat-water mapping from 3D Dixon-MRI",
+  "upload_type": "software",
+  "description": "See the README on GitHub: https://github.com/openmiblab/iBEAt-fatwater",
+  "creators": [
+    {
+      "name": "Periquito, Joao",
+      "affiliation": "University of Sheffield"
+    },
+    {
+      "name": "Sourbron, Steven",
+      "affiliation": "University of Sheffield"
+    }
+  ],
+  "keywords": ["Dixon", "deep-learning", "MRI"],
+  "license": "Apache-2.0",
+  "version": "v0.0.1",
+  "publication_date": "2025-12-04",
+  "related_identifiers": [
+    {
+      "relation": "isSupplementTo",
+      "identifier": "https://github.com/openmiblab/iBEAt-fatwater"
+    }
+  ],
+  "url": "https://miblab.org",
+  "communities": [
+    {
+      "identifier": "miblab"
+    }
+  ]
+}

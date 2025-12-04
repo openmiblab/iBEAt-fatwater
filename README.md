@@ -7,7 +7,7 @@
 
 Computation of fat and water images from a 2-point MRI Dixon acquisition is usually done in-line by the scanner software, and requires access to the phase and magnitude data. 
 
-In some cases one may want to compute fat and water images retrospectively - for instance when they were not originally exported, or in order to reconstruct them with different models (e.g. with correction for T2* decay, B0-effects, etc). This causes a practical problem when, as is common, phase images or not stored and only magnitude images of in-phase and opposed-phase scans are available. 
+In some cases one may want to compute fat and water images retrospectively - for instance when they were not originally exported, or in order to reconstruct them with different models (e.g. with correction for T2* decay, B0-effects, etc). This causes a practical problem when, as is common, phase images are not stored and only magnitude images of in-phase and opposed-phase scans are available. 
 
 The crucial bit of information that is missing with magnitude-only data is the sign of the opposed phase image - does the pixel contain mostly water or mostly fat? This pipeline trains a deep learning model to recover this binary information from magnitude images of in-phase and opposed-phase data. 
 
